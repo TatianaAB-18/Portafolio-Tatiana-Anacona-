@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Fetch GitHub Repositories at build time
+const response = await fetch('https://api.github.com/users/TatianaAB-18/repos?sort=updated&per_page=20');
+const repos = await response.json();
+
+// If the API rate limits or fails, fallback to empty array
+let projects = Array.isArray(repos) ? repos : [];
+
+// Filtrar proyectos importantes y excluir cualquiera que tenga "amor"
+projects = projects.filter((repo: any) => {
+  const searchString = `${repo.name} ${repo.description}`.toLowerCase();
+  return !searchString.includes('amor');
+}).slice(0, 6);
+
+// Calcular el semestre actual dinámicamente
+// Base: Agosto 2024 = 1er semestre -> Agosto 2026 = 5to semestre
+const currentDate = new Date();
+const currentYear = currentDate.getFullYear();
+const currentMonth = currentDate.getMonth(); // 0 = Enero, 11 = Diciembre
+
+// Fórmula: 2 semestres por año desde 2024
+let semestresDesde2024 = (currentYear - 2024) * 2;
+// Si estamos en la primera mitad del año (Enero - Julio), restamos 1
+if (currentMonth < 7) {
+  semestresDesde2024 -= 1;
+}
+// Sumamos 1 porque el semestre base de 2024 es el primero. Limitamos a 10 semestres (ej. graduación).
+const numeroSemestre = Math.min(semestresDesde2024 + 1, 10);
+---
+
+<Layout title="TatianaAB-18 | Desarrolladora de Software">
+  <!-- Hero Section -->
+  <section class="max-w-5xl mx-auto px-6 py-20 md:py-32 flex flex-col md:flex-row items-center gap-12">
+    <div class="flex-1 space-y-6 text-center md:text-left">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 text-sm font-medium mb-2">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+        </span>
+        Estudiante de {numeroSemestre}º Semestre
+      </div>
+      <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-text-main">
+        Hola, soy <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">Tatiana</span>
+      </h1>
+      <p class="text-lg md:text-xl text-text-muted max-w-2xl">
+        Estudiante de Ingeniería y apasionada por crear soluciones web eficientes, escalables y con un diseño impecable.
+      </p>
+      <div class="flex flex-wrap gap-4 justify-center md:justify-start pt-4">
+        <a href="#projects" class="px-6 py-3 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-medium transition-colors shadow-lg shadow-brand-500/25">
+          Ver Proyectos
+        </a>
+        <a href="https://github.com/TatianaAB-18" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-lg bg-surface hover:bg-surface-hover text-text-main font-medium border border-surface-border transition-colors flex items-center gap-2">
+          <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+    <div class="flex-1 relative w-full max-w-sm">
+      <div class="absolute inset-0 bg-gradient-to-tr from-brand-600 to-brand-400 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+      <div class="aspect-square rounded-2xl bg-surface border border-surface-border overflow-hidden relative shadow-2xl flex items-center justify-center">
+        <img src="/profile.jpg" alt="Foto de Tatiana" class="w-full h-full object-cover" />
+      </div>
+    </div>
+  </section>
+
+  <!-- About and Skills Section -->
+  <section id="about" class="py-20 bg-surface/30 border-y border-surface-border">
+    <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+      <div>
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+          <span class="w-8 h-[2px] bg-brand-500"></span>
+          Sobre Mí
+        </h2>
+        <p class="text-text-muted leading-relaxed mb-6">
+          Actualmente soy <strong>estudiante de {numeroSemestre}º semestre</strong> de ingeniería. Me especializo en desarrollar <strong>páginas web rápidas y modernas</strong>, y en la creación de <strong>aplicaciones móviles multiplataforma con Flutter</strong>.
+        </p>
+        <p class="text-text-muted leading-relaxed">
+          Siempre estoy buscando aprender nuevas tecnologías y mejorar mis prácticas de desarrollo, asegurando que cada proyecto no solo cumpla con los requisitos, sino que supere las expectativas en calidad y experiencia de usuario.
+        </p>
+      </div>
+      <div>
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+          <span class="w-8 h-[2px] bg-brand-500"></span>
+          Habilidades Técnicas
+        </h2>
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Skill Items -->
+          <div class="p-4 rounded-xl bg-surface border border-surface-border hover:border-brand-500/50 transition-colors">
+            <h3 class="font-medium text-brand-300 mb-1">Desarrollo Web</h3>
+            <p class="text-sm text-text-muted">Astro, Tailwind CSS, HTML, CSS, JavaScript</p>
+          </div>
+          <div class="p-4 rounded-xl bg-surface border border-surface-border hover:border-brand-500/50 transition-colors">
+            <h3 class="font-medium text-brand-300 mb-1">Desarrollo Móvil</h3>
+            <p class="text-sm text-text-muted">Flutter</p>
+          </div>
+          <div class="p-4 rounded-xl bg-surface border border-surface-border hover:border-brand-500/50 transition-colors">
+            <h3 class="font-medium text-brand-300 mb-1">Diseño UI</h3>
+            <p class="text-sm text-text-muted">Mobile First, Responsive Design, Accesibilidad</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-20 max-w-5xl mx-auto px-6">
+    <h2 class="text-3xl font-bold mb-12 text-center">Mis Proyectos Destacados</h2>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.length > 0 ? projects.map((repo: any) => (
+        <a href={repo.html_url} target="_blank" rel="noopener noreferrer" class="group flex flex-col bg-surface border border-surface-border rounded-xl p-6 hover:border-brand-500 transition-all hover:shadow-lg hover:-translate-y-1">
+          <div class="flex justify-between items-start mb-4">
+            <svg class="w-8 h-8 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-medium text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-md border border-brand-500/20">
+                {new Date(repo.created_at || repo.updated_at).getFullYear()}
+              </span>
+              <svg class="w-5 h-5 text-text-muted group-hover:text-brand-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-brand-300 transition-colors">{repo.name}</h3>
+          <p class="text-text-muted text-sm mb-6 flex-grow">{repo.description || "Un proyecto de software desarrollado en GitHub."}</p>
+          
+          <div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-border/50">
+            <div class="flex items-center gap-2 text-xs font-medium text-brand-200">
+              {repo.language && (
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-400"></span>
+                  {repo.language}
+                </span>
+              )}
+            </div>
+            <div class="flex items-center gap-3 text-xs text-text-muted">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                {repo.stargazers_count}
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                {repo.forks_count}
+              </span>
+            </div>
+          </div>
+        </a>
+      )) : (
+        <p class="text-text-muted col-span-full text-center">Cargando proyectos o no hay repositorios públicos disponibles.</p>
+      )}
+    </div>
+  </section>
+</Layout>

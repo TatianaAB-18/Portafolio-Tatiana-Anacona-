@@ -1,0 +1,41 @@
+---
+import SEO from '../components/SEO.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Portafolio de TatianaAB-18 - Desarrolladora de Software" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <SEO title={title} description={description} />
+  </head>
+  <body class="min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+    <!-- Header temporal, luego lo extraeremos a un componente -->
+    <header class="fixed top-0 w-full backdrop-blur-md bg-background/80 border-b border-surface-border z-50 transition-all duration-300">
+      <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="/" class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">
+          Mi Portafolio
+        </a>
+        <nav class="hidden md:flex gap-8">
+          <a href="#about" class="text-text-muted hover:text-brand-400 transition-colors text-sm font-medium">Sobre Mí</a>
+          <a href="#skills" class="text-text-muted hover:text-brand-400 transition-colors text-sm font-medium">Habilidades</a>
+          <a href="#projects" class="text-text-muted hover:text-brand-400 transition-colors text-sm font-medium">Proyectos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-grow pt-24 pb-16">
+      <slot />
+    </main>
+
+    <footer class="border-t border-surface-border py-8 text-center text-text-muted text-sm mt-auto">
+      <p>&copy; {new Date().getFullYear()} TatianaAB-18.</p>
+    </footer>
+  </body>
+</html>
